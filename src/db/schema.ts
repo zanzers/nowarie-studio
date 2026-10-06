@@ -20,9 +20,9 @@ export const employees = pgTable("employees", {
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-export const employessRules = pgTable("employee_rules", {
+export const employeeRules = pgTable("employee_rules", {
     id: uuid("id").primaryKey().defaultRandom(),
-    employeeId: uuid("employee_id").notNull().references(() => employees.id, { onDelete: "cascade"}),
+    employeeId: uuid("employee_id").notNull().unique().references(() => employees.id, { onDelete: "cascade"}),
     mission: text("mission").notNull(),
     maxRevisionRounds: integer("max_revision_rounds").notNull().default(5),
     createdAt: timestamp("created_at").notNull().defaultNow(),
@@ -30,9 +30,9 @@ export const employessRules = pgTable("employee_rules", {
 });
 
 
-export const employeeRuleItems  = pgTable("employee_rule_items ", {
+export const employeeRuleItems  = pgTable("employee_rule_items", {
     id: uuid("id").primaryKey().defaultRandom(),
-    employeeId: uuid("employee_rule_id").notNull().references(() => employessRules.id, {onDelete: "cascade"}),
+    employeeId: uuid("employee_id").notNull().references(() => employeeRules.id, {onDelete: "cascade"}),
     type: text("type").notNull(),
     value: text("value").notNull(),
     priority: integer("priority").notNull(),
@@ -41,9 +41,9 @@ export const employeeRuleItems  = pgTable("employee_rule_items ", {
 })
 
 
-export const employeeOutputs  = pgTable("employee_outputs ", {
+export const employeeOutputs  = pgTable("employee_outputs", {
     id: uuid("id").primaryKey().defaultRandom(),
-    employeeId: uuid("employee_id").notNull().references(() => employees.id, { onDelete: "cascade"}),
+    employeeId: uuid("employee_id").notNull().unique().references(() => employees.id, { onDelete: "cascade"}),
     outputKind: text("output_kind").notNull(),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(), 
@@ -91,7 +91,7 @@ export const requests = pgTable("requests", {
 export const agent = pgTable("agent_runs", {
   id: uuid("id").primaryKey().defaultRandom(),
   projectId: uuid("project_id").references(() => projects.id, { onDelete: "cascade" }),
-  employeeId: uuid("employee_id").notNull().references(() => employees.id, { onDelete: "cascade" }),
+  employeeId: uuid("employee_id").notNull().references(() => employees.id, { onDelete: "restrict" }),
   task: text("task").notNull(),
   promptVersion: text("prompt_version").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
@@ -127,7 +127,7 @@ export const agentUsage = pgTable("agent_usage", {
 export const deliverables = pgTable("deliverables", {
   id: uuid("id").primaryKey().defaultRandom(),
   projectId: uuid("project_id").notNull().references(() => projects.id, { onDelete: "cascade" }),
-  status: text("status").notNull().default("in_progess"),
+  status: text("status").notNull().default("in_progress"),
   kind: text("kind").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => [unique().on(t.projectId, t.kind)]);
