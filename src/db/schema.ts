@@ -32,7 +32,7 @@ export const agentCost = pgTable("agent_cost", {
 });
 
 
-export const result = pgTable("result", {
+export const results = pgTable("result", {
   resultId: uuid("result_id").primaryKey().defaultRandom(),
   agentId: uuid("agent_id").notNull().references(() => agents.agentId),
   input: jsonb("input").notNull(),
