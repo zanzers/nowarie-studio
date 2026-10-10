@@ -38,8 +38,14 @@ export async function POST(req: Request) {
     try {
         const { agent, profile } = await createAgent(parsed.data);
         return NextResponse.json({ agent, profile }, { status: HttpStatus.Created })
-    } catch (err: any) {
-        const code = err?.code ?? err?.cause?.code;
+    } catch (err: unknown) {
+        const error = err as {
+            code?: string;
+            cause?: {
+                code?: string;
+            }
+        }
+        const code = error?.code ?? error?.cause?.code;
 
         if (code === DatabaseErrorCode.alreadyExists) {
             return NextResponse.json({

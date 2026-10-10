@@ -1,6 +1,6 @@
-import { createAgent, getAgent, listAgents, updateAgent } from "@/app/agents/queries/profile";
-import { createEmployeeSchema, idSchema, patchSchema } from "@/app/agents/type/schema.type";
-import { DatabaseErrorCode, HttpStatus } from "@/type/httpStatus";
+import { getAgent,  updateAgent } from "@/app/agents/queries/profile";
+import { idSchema, patchSchema } from "@/app/agents/type/schema.type";
+import { HttpStatus } from "@/type/httpStatus";
 import { Ctx } from "@/type/profile.queries";
 import { NextResponse } from "next/server";
 
