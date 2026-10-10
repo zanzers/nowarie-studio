@@ -1,7 +1,7 @@
 import { db } from "@/db";
 import { desc, eq } from "drizzle-orm";
 import { agents, profiles, results } from "@/db/schema";
-import { CreateAgentInput, CreateResultInput } from "@/type/profile.queries";
+import { CreateAgentInput, CreateResultInput, updateAgentInput } from "@/type/profile.queries";
 
 
 
@@ -28,6 +28,7 @@ export async function listAgents() {
       role: profiles.role,
       avatarUrl: profiles.avatarUrl,
       model: agents.model,
+      instructions: agents.instructions,
     }).from(profiles).innerJoin(agents, eq(profiles.agentId, agents.agentId));
 }
  
@@ -45,3 +46,9 @@ export async function listResultsByAgent(agentId: string) {
   return db.select().from(results).where(eq(results.agentId, agentId)).orderBy(desc(results.createdAt));
 }
  
+
+
+export async function updateAgent({ agentId, ...changes }: updateAgentInput) {
+  const [row] = await db.update(agents).set(changes).where(eq(agents.agentId, agentId)).returning();
+  return row ?? null;
+}
